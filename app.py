@@ -31,7 +31,7 @@ def load_data():
     global data_2024, t_list
 
     try:
-        with open("dat_2024.json", "r") as json_file_2:
+        with open("uptac/dat_2024.json", "r") as json_file_2:
             data_2024 = json.load(json_file_2)
 
         # Analysis - create sets for unique values
