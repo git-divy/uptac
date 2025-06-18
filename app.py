@@ -3,7 +3,6 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from aliver import keep_alive
 import json
 from tabulator import tabulate
-import requests
 
 app = Flask(__name__)
 
@@ -28,14 +27,9 @@ t_list = {
 }
 
 
-def load_data():
-    global data_2024, t_list
-
-    
-    # with open("dat_2024.json", "r") as json_file_2:
-    #     data_2024 = json.load(json_file_2)
-    
-    data_2024 = requests.get('https://github.com/git-divy/uptac/raw/refs/heads/main/dat_2024.json').json()
+try:
+    with open("dat_2024.json", "r") as json_file_2:
+        data_2024 = json.load(json_file_2)
 
     # Analysis - create sets for unique values
     t_set = {
@@ -64,6 +58,10 @@ def load_data():
 
     print(f"Data loaded successfully. Total records: {len(data_2024)}")
 
+except FileNotFoundError:
+    print("Error: dat_2024.json file not found")
+except Exception as e:
+    print(f"Error loading data: {str(e)}")
 
 
 def filter_data(
@@ -129,6 +127,7 @@ def filter_data(
         },
         "results": paginated_results,
     }
+
 
 
 @app.route("/")
@@ -209,5 +208,4 @@ def get_available_filters():
 
 
 if __name__ == "__main__":
-    load_data()
     app.run()
