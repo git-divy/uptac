@@ -31,43 +31,39 @@ t_list = {
 def load_data():
     global data_2024, t_list
 
-    try:
-        # with open("dat_2024.json", "r") as json_file_2:
-        #     data_2024 = json.load(json_file_2)
-        
-        data_2024 = requests.get('https://github.com/git-divy/uptac/raw/refs/heads/main/dat_2024.json').json()
+    
+    # with open("dat_2024.json", "r") as json_file_2:
+    #     data_2024 = json.load(json_file_2)
+    
+    data_2024 = requests.get('https://github.com/git-divy/uptac/raw/refs/heads/main/dat_2024.json').json()
 
-        # Analysis - create sets for unique values
-        t_set = {
-            "round": set(),
-            "institute": set(),
-            "program": set(),
-            "quota": set(),
-            "category": set(),
-        }
+    # Analysis - create sets for unique values
+    t_set = {
+        "round": set(),
+        "institute": set(),
+        "program": set(),
+        "quota": set(),
+        "category": set(),
+    }
 
-        for item in data_2024:
-            # Cleanup
-            item.pop("seat_gender", None)
-            item.pop("remark", None)
+    for item in data_2024:
+        # Cleanup
+        item.pop("seat_gender", None)
+        item.pop("remark", None)
 
-            # Set Detection
-            t_set["round"].add(item["round"])
-            t_set["institute"].add(item["institute"])
-            t_set["program"].add(item["program"])
-            t_set["quota"].add(item["quota"])
-            t_set["category"].add(item["category"])
+        # Set Detection
+        t_set["round"].add(item["round"])
+        t_set["institute"].add(item["institute"])
+        t_set["program"].add(item["program"])
+        t_set["quota"].add(item["quota"])
+        t_set["category"].add(item["category"])
 
-        # Convert sets to lists
-        for t in t_set:
-            t_list[t] = list(t_set[t])
+    # Convert sets to lists
+    for t in t_set:
+        t_list[t] = list(t_set[t])
 
-        print(f"Data loaded successfully. Total records: {len(data_2024)}")
+    print(f"Data loaded successfully. Total records: {len(data_2024)}")
 
-    except FileNotFoundError:
-        print("Error: dat_2024.json file not found")
-    except Exception as e:
-        print(f"Error loading data: {str(e)}")
 
 
 def filter_data(
