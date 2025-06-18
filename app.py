@@ -1,8 +1,20 @@
 from flask import Flask, request, jsonify, render_template
+from apscheduler.schedulers.background import BackgroundScheduler
+from aliver import keep_alive
 import json
 from tabulator import tabulate
 
 app = Flask(__name__)
+
+# Setting up Schedulars
+scheduler = BackgroundScheduler()
+scheduler.add_job(
+    id="aliver",
+    func=keep_alive,
+    args=(None,),
+    trigger="interval",
+    seconds=10 * 60,
+)
 
 # Global variables to store data
 data_2024 = []
@@ -108,7 +120,6 @@ def filter_data(
     start_index = (page - 1) * max_results
     end_index = start_index + max_results
     paginated_results = results[start_index:end_index]
-    
 
     return {
         "meta_data": {
@@ -117,13 +128,27 @@ def filter_data(
             "current_page": page,
             "total_pages": (len(results) + max_results - 1) // max_results,
         },
-        "results": paginated_results
+        "results": paginated_results,
     }
 
 
 @app.route("/")
 def index():
     return render_template("index.html")
+
+
+@app.route("/start")
+def start():
+    try:
+        if scheduler.running:
+            return "Scheduler is already running"
+
+        scheduler.modify_job(job_id="aliver", args=(request.host_url,))
+        scheduler.start()
+        return f"Schedular has started."
+
+    except Exception as e:
+        return str(e)
 
 
 @app.route("/api/data", methods=["POST"])
@@ -148,7 +173,7 @@ def get_filtered_data():
         program = request_data.get("program")
         quota = request_data.get("quota")
         category = request_data.get("category")
-        
+
         if round_l is not None:
             round_l = [int(r) for r in round_l]
 
@@ -165,8 +190,8 @@ def get_filtered_data():
             category=category,
             rank=rank,
         )
-        
-        #return tabulate(data_raw["results"], width=80, dump=True)
+
+        # return tabulate(data_raw["results"], width=80, dump=True)
 
         return jsonify(
             {
