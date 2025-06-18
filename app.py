@@ -3,6 +3,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from aliver import keep_alive
 import json
 from tabulator import tabulate
+import requests
 
 app = Flask(__name__)
 
@@ -31,8 +32,10 @@ def load_data():
     global data_2024, t_list
 
     try:
-        with open("uptac/dat_2024.json", "r") as json_file_2:
-            data_2024 = json.load(json_file_2)
+        # with open("dat_2024.json", "r") as json_file_2:
+        #     data_2024 = json.load(json_file_2)
+        
+        data_2024 = requests.get('https://github.com/git-divy/uptac/raw/refs/heads/main/dat_2024.json').json()
 
         # Analysis - create sets for unique values
         t_set = {
