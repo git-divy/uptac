@@ -1,10 +1,14 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, send_from_directory
 from apscheduler.schedulers.background import BackgroundScheduler
 from aliver import keep_alive
 import json
 from tabulator import tabulate
+import os
+from analysis import generate_res_files
 
 app = Flask(__name__)
+generate_res_files()
+
 
 # Setting up Schedulars
 scheduler = BackgroundScheduler()
@@ -129,7 +133,6 @@ def filter_data(
     }
 
 
-
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -205,6 +208,75 @@ def get_filtered_data():
 @app.route("/api/filters", methods=["GET"])
 def get_available_filters():
     return jsonify(t_list)
+
+
+@app.route("/res/<path:filename>")
+def serve_res_files(filename):
+    return send_from_directory("res", filename)
+
+
+@app.route("/res/")
+def list_res_files():
+
+    css = """
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
+        
+        :root {
+            --md-sys-color-primary: #d0bcff;
+            --md-sys-color-primary-container: #4f378b;
+            --md-sys-color-on-primary: #371e73;
+            --md-sys-color-on-primary-container: #eaddff;
+            --md-sys-color-surface: #10100f;
+            --md-sys-color-on-surface: #e6e1e5;
+            --md-sys-color-outline: #938f99;
+            --md-sys-shape-corner-medium: 12px;
+            --md-sys-elevation-level1: 0px 1px 2px 0px rgba(0, 0, 0, 0.3),
+                0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+        }
+        
+        body {
+            font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background-color: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            padding: 24px;
+            margin: 0;
+            line-height: 1.5;
+        }
+        
+        h2 {
+            color: var(--md-sys-color-primary);
+            font-size: 28px;
+            font-weight: 400;
+            margin-bottom: 24px;
+            margin-top: 0;
+        }
+        
+        a {
+            color: var(--md-sys-color-primary);
+            text-decoration: none;
+            display: inline-block;
+            width : 100px;
+            margin: 8px 0;
+            padding: 12px 16px;
+            border-radius: var(--md-sys-shape-corner-medium);
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+            border: 1px solid var(--md-sys-color-outline);
+        }
+        
+        a:hover {
+            background-color: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+            box-shadow: var(--md-sys-elevation-level1);
+        }
+    </style>
+    """
+
+    files = [f for f in os.listdir("res") if f.endswith(".html")]
+    file_links = "".join([f'<a href="/res/{f}">{f[:-5]}</a><br>' for f in files])
+    return (
+        f"{css}<h2>Institute/Program wise Distribution Sorted by CR :</h2>{file_links}"
+    )
 
 
 if __name__ == "__main__":
