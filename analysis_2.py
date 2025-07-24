@@ -48,7 +48,8 @@ def _gen_html(cat_fil):
                     "institute": institute_name,
                     "program": program_name,
                     "cr": programs[program_name]["cr"],
-                    "round": programs[program_name]["round"],
+                    "category" : cat_fil,
+                    "round": programs[program_name]["round"]
                 }
             )
 
