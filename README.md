@@ -1,6 +1,7 @@
 # UPTAC College Predictor
 
 A comprehensive web application for predicting college admissions based on UPTAC 2024 data. This tool helps students find suitable colleges and programs based on their rank, category, quota, and other preferences.
+The application is currently deployed and accessible at: https://uptac.onrender.com/
 
 ## 🚀 Features
 
