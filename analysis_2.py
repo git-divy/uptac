@@ -54,7 +54,7 @@ def _gen_html(cat_fil):
 
     data.sort(key=lambda x: x["cr"], reverse=False)
 
-    datax = tabulate(data, dump=True, width=100)
+    datax = tabulate(data, dump=True, width=75)
 
     os.makedirs("res2", exist_ok=True)
     with open(f"res2/{cat_fil}.html", "w") as fl:
