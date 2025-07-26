@@ -10,6 +10,7 @@ The application is currently deployed and accessible at: https://uptac.onrender.
 - **Multiple Data Views**: 
   - Institute-wise distribution sorted by closing rank
   - Program-wise distribution sorted by closing rank
+  - Average Package Data (Gemini 2.5 Pro)
 - **Interactive Web Interface**: Modern Material Design 3 inspired UI
 - **API Support**: RESTful API for programmatic access
 - **Responsive Design**: Works seamlessly on desktop and mobile devices
@@ -192,7 +193,7 @@ Always refer to official UPTAC/AKTU sources for final admission decisions.
 
 ## 🏷️ Version
 
-Current Version: **v1.3.0**
+Current Version: **v1.3.1**
 
 ---
 
